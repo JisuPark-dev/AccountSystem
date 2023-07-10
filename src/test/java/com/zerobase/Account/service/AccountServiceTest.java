@@ -3,11 +3,13 @@ package com.zerobase.Account.service;
 import com.zerobase.Account.domain.Account;
 import com.zerobase.Account.domain.AccountStatus;
 import com.zerobase.Account.repository.AccountRepository;
+import net.bytebuddy.asm.Advice;
 import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,8 +19,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class AccountServiceTest {
@@ -37,11 +42,20 @@ class AccountServiceTest {
                         .accountStatus(AccountStatus.UNREGISTERED)
                         .accountNumber("40000")
                         .build()));
+
+        ArgumentCaptor<Long> captor = ArgumentCaptor.forClass(Long.class);
+
         //when
         Account account = accountService.findAccount(1234L);
 
         //then
+        verify(accountRepository, times(1)).findById(captor.capture());
+        verify(accountRepository, times(0)).save(any());
+
+        assertEquals(captor.getValue(),1234L);
         assertEquals("40000", account.getAccountNumber());
+        assertNotEquals("40001", account.getAccountNumber());
+        assertTrue(1234L== captor.getValue());
         assertEquals(AccountStatus.UNREGISTERED, account.getAccountStatus());
         
     }

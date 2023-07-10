@@ -11,17 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AccountController {
     private final AccountService accountService;
-
     @GetMapping("/create-account")
     public String createAccount() {
-        accountService.createAccount();
+        accountService.saveAccount();
         return "ok";
     }
 
-    @GetMapping("/account/{accountId}")
-    public Account findAccount(@PathVariable Long accountId) {
-        Account account = accountService.getAccount(accountId);
-        return account;
+    @GetMapping("account/{id}")
+    public Account findAccount(@PathVariable Long id) {
+        return accountService.findAccount(id);
     }
-
 }

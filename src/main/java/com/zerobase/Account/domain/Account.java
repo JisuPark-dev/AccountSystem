@@ -1,5 +1,6 @@
 package com.zerobase.Account.domain;
 
+import com.zerobase.Account.type.AccountStatus;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -32,7 +33,7 @@ public class Account {
     private LocalDateTime unregisteredAt;
 
     @CreatedDate
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
     @LastModifiedDate
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 }

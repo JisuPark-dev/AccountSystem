@@ -6,7 +6,6 @@ import com.zerobase.Account.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.Enumerated;
 import javax.transaction.Transactional;
 
 @Service
@@ -15,12 +14,8 @@ public class AccountService {
     private final AccountRepository accountRepository;
 
     @Transactional
-    public void saveAccount() {
-        Account account = Account.builder()
-                .accountNumber("4000")
-                .accountStatus(AccountStatus.IN_USE)
-                .build();
-        accountRepository.save(account);
+    public void createAccount(Long userId, Long initialBalance) {
+
     }
 
     @Transactional

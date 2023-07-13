@@ -16,3 +16,11 @@ Content-Type: application/json
 "accountNumber": "1000000005"
 }
 
+#### search accounts by userId
+GET http://localhost:8080/account?user_id=1
+Content-Type: application/json
+
+{
+  "userId": 1
+}
+

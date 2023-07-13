@@ -1,13 +1,14 @@
 package com.zerobase.Account.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.*;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-public class CreateAccount {
+public class DeleteAccount {
     @Getter
     @Setter
     @AllArgsConstructor
@@ -16,9 +17,10 @@ public class CreateAccount {
         @NotNull
         @Min(1)
         private Long userId;
-        @NotNull
-        @Min(0)
-        private Long initialBalance;
+
+        @NotBlank
+        @Size(min = 10, max = 10)
+        private String accountNumber;
     }
 
     @Getter
@@ -29,13 +31,13 @@ public class CreateAccount {
     public static class Response{
         private Long userId;
         private String accountNumber;
-        private LocalDateTime registerAt;
+        private LocalDateTime unRegisterAt;
 
         public static Response from(AccountDto accountDto) {
             return Response.builder()
                     .userId(accountDto.getUserId())
                     .accountNumber(accountDto.getAccountNumber())
-                    .registerAt(accountDto.getRegisterAt())
+                    .unRegisterAt(accountDto.getRegisterAt())
                     .build();
         }
     }

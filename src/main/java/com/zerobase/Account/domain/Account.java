@@ -1,6 +1,8 @@
 package com.zerobase.Account.domain;
 
+import com.zerobase.Account.exception.AccountException;
 import com.zerobase.Account.type.AccountStatus;
+import com.zerobase.Account.type.ErrorCode;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -36,4 +38,11 @@ public class Account {
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    public void useBalance(Long amount) {
+        if (amount > balance) {
+            throw new AccountException(ErrorCode.AMOUNT_EXCEED_BALANCE);
+        }
+        balance -= amount;
+    }
 }

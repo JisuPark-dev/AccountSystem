@@ -1,5 +1,6 @@
 package com.zerobase.Account.dto;
 
+import com.zerobase.Account.domain.Transaction;
 import com.zerobase.Account.type.TransactionResultType;
 import lombok.*;
 
@@ -53,5 +54,15 @@ public class UseBalance {
         private String transactionId;
         private Long amount;
         private LocalDateTime transactionAt;
+
+        public static Response from(TransactionDto transactionDto) {
+            return Response.builder()
+                    .accountNumber(transactionDto.getAccountNumber())
+                    .transactionResult(transactionDto.getTransactionResultType())
+                    .transactionId(transactionDto.getTransactionId())
+                    .amount(transactionDto.getAmount())
+                    .transactionAt(transactionDto.getTransactedAt())
+                    .build();
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.zerobase.Account.dto;
 
 import com.zerobase.Account.domain.Account;
+import com.zerobase.Account.domain.Transaction;
 import com.zerobase.Account.type.TransactionResultType;
 import com.zerobase.Account.type.TransactionType;
 import lombok.*;
@@ -23,5 +24,17 @@ public class TransactionDto {
     private Long balanceSnapshot;
     private String transactionId;
     private LocalDateTime transactedAt;
+
+    public static TransactionDto fromEntity(Transaction transaction) {
+        return TransactionDto.builder()
+                .accountNumber(transaction.getAccount().getAccountNumber())
+                .transactionType(transaction.getTransactionType())
+                .transactionResultType(transaction.getTransactionResultType())
+                .amount(transaction.getAmount())
+                .balanceSnapshot(transaction.getBalanceSnapshot())
+                .transactionId(transaction.getTransactionId())
+                .transactedAt(transaction.getTransactedAt())
+                .build();
+    }
 
 }

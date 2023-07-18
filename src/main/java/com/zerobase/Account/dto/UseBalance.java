@@ -1,7 +1,6 @@
 package com.zerobase.Account.dto;
 
 import com.zerobase.Account.aop.AccountLockIdInterface;
-import com.zerobase.Account.domain.Transaction;
 import com.zerobase.Account.type.TransactionResultType;
 import lombok.*;
 

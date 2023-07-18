@@ -3,7 +3,6 @@ package com.zerobase.Account.controller;
 import com.zerobase.Account.aop.AccountLock;
 import com.zerobase.Account.dto.CancelBalance;
 import com.zerobase.Account.dto.QueryTransactionResponse;
-import com.zerobase.Account.dto.TransactionDto;
 import com.zerobase.Account.dto.UseBalance;
 import com.zerobase.Account.exception.AccountException;
 import com.zerobase.Account.service.TransactionService;

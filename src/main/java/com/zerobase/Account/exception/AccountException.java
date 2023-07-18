@@ -4,8 +4,6 @@ package com.zerobase.Account.exception;
 import com.zerobase.Account.type.ErrorCode;
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
-
 @Getter
 @Setter
 @AllArgsConstructor

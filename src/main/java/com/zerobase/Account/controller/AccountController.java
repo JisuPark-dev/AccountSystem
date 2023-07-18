@@ -1,12 +1,10 @@
 package com.zerobase.Account.controller;
 
 import com.zerobase.Account.domain.Account;
-import com.zerobase.Account.dto.AccountDto;
 import com.zerobase.Account.dto.AccountInfo;
 import com.zerobase.Account.dto.CreateAccount;
 import com.zerobase.Account.dto.DeleteAccount;
 import com.zerobase.Account.service.AccountService;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

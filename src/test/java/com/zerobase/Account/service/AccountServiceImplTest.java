@@ -27,13 +27,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class AccountServiceTest {
+class AccountServiceImplTest {
     @Mock
     private AccountRepository accountRepository;
     @Mock
     private AccountUserRepository accountUserRepository;
     @InjectMocks
-    private AccountService accountService;
+    private AccountServiceImpl accountServiceImpl;
 
     @Test
     void successCreatAccount(){
@@ -55,7 +55,7 @@ class AccountServiceTest {
         ArgumentCaptor<Account> captor = ArgumentCaptor.forClass(Account.class);
         
         //when
-        AccountDto account = accountService.createAccount(1L, 1000L);
+        AccountDto account = accountServiceImpl.createAccount(1L, 1000L);
         //then
         verify(accountRepository, times(1)).save(captor.capture());
         assertEquals(account.getUserId(),12L);
@@ -79,7 +79,7 @@ class AccountServiceTest {
         ArgumentCaptor<Account> captor = ArgumentCaptor.forClass(Account.class);
 
         //when
-        AccountDto account = accountService.deleteAccount(1L, "1234567880");
+        AccountDto account = accountServiceImpl.deleteAccount(1L, "1234567880");
         //then
         verify(accountRepository, times(1)).save(captor.capture());
         assertEquals(account.getUserId(),12L);
@@ -98,7 +98,7 @@ class AccountServiceTest {
 
         //when
         AccountException accountException = assertThrows(AccountException.class,
-                () -> accountService.deleteAccount(1L, "1234567890"));
+                () -> accountServiceImpl.deleteAccount(1L, "1234567890"));
 
         //then
         assertEquals(ErrorCode.USER_NOT_FOUND, accountException.getErrorCode());
@@ -120,7 +120,7 @@ class AccountServiceTest {
 
         //when
         AccountException accountException = assertThrows(AccountException.class,
-                () -> accountService.deleteAccount(1L, "1234567890"));
+                () -> accountServiceImpl.deleteAccount(1L, "1234567890"));
 
         //then
         assertEquals(ErrorCode.ACCOUNT_NOT_FOUND, accountException.getErrorCode());
@@ -148,7 +148,7 @@ class AccountServiceTest {
 
         //when
         AccountException accountException = assertThrows(AccountException.class,
-                () -> accountService.deleteAccount(1L, "1234567890"));
+                () -> accountServiceImpl.deleteAccount(1L, "1234567890"));
 
         //then
         assertEquals(ErrorCode.USER_ACCOUNT_UNMATCHED, accountException.getErrorCode());
@@ -173,7 +173,7 @@ class AccountServiceTest {
 
         //when
         AccountException accountException = assertThrows(AccountException.class,
-                () -> accountService.deleteAccount(1L, "1234567890"));
+                () -> accountServiceImpl.deleteAccount(1L, "1234567890"));
 
         //then
         assertEquals(ErrorCode.BALANCE_NOT_EMPTY, accountException.getErrorCode());
@@ -199,7 +199,7 @@ class AccountServiceTest {
 
         //when
         AccountException accountException = assertThrows(AccountException.class,
-                () -> accountService.deleteAccount(1L, "1234567890"));
+                () -> accountServiceImpl.deleteAccount(1L, "1234567890"));
 
         //then
         assertEquals(ErrorCode.ACCOUNT_ALREADY_UNREGISTERED, accountException.getErrorCode());
@@ -223,7 +223,7 @@ class AccountServiceTest {
         ArgumentCaptor<Account> captor = ArgumentCaptor.forClass(Account.class);
 
         //when
-        AccountDto account = accountService.createAccount(1L, 1000L);
+        AccountDto account = accountServiceImpl.createAccount(1L, 1000L);
         //then
         verify(accountRepository, times(1)).save(captor.capture());
         assertEquals(account.getUserId(),15L);
@@ -241,7 +241,7 @@ class AccountServiceTest {
 
         //when
         AccountException accountException = assertThrows(AccountException.class,
-                () -> accountService.createAccount(1L, 1000L));
+                () -> accountServiceImpl.createAccount(1L, 1000L));
 
         //then
         assertEquals(ErrorCode.USER_NOT_FOUND, accountException.getErrorCode());
@@ -259,7 +259,7 @@ class AccountServiceTest {
                 .willReturn(10);
 
         AccountException accountException = assertThrows(AccountException.class,
-                () -> accountService.createAccount(1L, 1000L));
+                () -> accountServiceImpl.createAccount(1L, 1000L));
 
         //then
         assertEquals(ErrorCode.MAX_COUNT_FOR_USER_10, accountException.getErrorCode());
@@ -294,7 +294,7 @@ class AccountServiceTest {
         given(accountRepository.findByAccountUser(any()))
                 .willReturn(accounts);
         //when
-        List<AccountDto> accountDtos = accountService.getAccountByUserId(15L);
+        List<AccountDto> accountDtos = accountServiceImpl.getAccountByUserId(15L);
         //then
         assertEquals(3, accountDtos.size());
         assertEquals("1111111111", accountDtos.get(0).getAccountNumber());
@@ -312,7 +312,7 @@ class AccountServiceTest {
                 .willReturn(Optional.empty());
         //when
         AccountException accountException = assertThrows(AccountException.class,
-                () -> accountService.getAccountByUserId(1L));
+                () -> accountServiceImpl.getAccountByUserId(1L));
         //then
         assertEquals(ErrorCode.USER_NOT_FOUND, accountException.getErrorCode());
         

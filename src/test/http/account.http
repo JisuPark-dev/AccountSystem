@@ -3,7 +3,7 @@ POST http://localhost:8080/account
 Content-Type: application/json
 
 {
-  "userId": 1,
+  "userId": 3,
   "initialBalance": 10000
 }
 

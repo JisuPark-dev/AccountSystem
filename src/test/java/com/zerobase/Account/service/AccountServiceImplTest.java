@@ -8,6 +8,7 @@ import com.zerobase.Account.repository.AccountUserRepository;
 import com.zerobase.Account.repository.AccountRepository;
 import com.zerobase.Account.type.AccountStatus;
 import com.zerobase.Account.type.ErrorCode;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,11 +21,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static com.zerobase.Account.type.AccountStatus.IN_USE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AccountServiceImplTest {
@@ -35,6 +36,34 @@ class AccountServiceImplTest {
     @InjectMocks
     private AccountServiceImpl accountServiceImpl;
 
+
+
+    @Test
+    void creatFirstAccount(){
+        //given
+        AccountUser poby = AccountUser.builder()
+                .name("poby").build();
+        poby.setId(15L);
+        given(accountUserRepository.findById(anyLong()))
+                .willReturn(Optional.of(poby));
+        given(accountRepository.findFirstByAccountUserOrderByIdDesc(poby))
+                .willReturn(Optional.empty());
+        given(accountRepository.save(any()))
+                .willReturn(Account.builder()
+                        .accountUser(poby)
+                        .accountNumber("1000000013").build());
+
+        ArgumentCaptor<Account> captor = ArgumentCaptor.forClass(Account.class);
+
+        //when
+        AccountDto account = accountServiceImpl.createAccount(1L, 1000L);
+        //then
+        verify(accountRepository, times(1)).save(captor.capture());
+        assertEquals(account.getUserId(),15L);
+        assertEquals(10,captor.getValue().getAccountNumber().length());
+    }
+
+    //이미 생성되어 있다면 1씩 더하면서 생성됨
     @Test
     void successCreatAccount(){
         //given
@@ -43,7 +72,7 @@ class AccountServiceImplTest {
         poby.setId(12L);
         given(accountUserRepository.findById(anyLong()))
                 .willReturn(Optional.of(poby));
-        given(accountRepository.findFirstByOrderByIdDesc())
+        given(accountRepository.findFirstByAccountUserOrderByIdDesc(poby))
                 .willReturn(Optional.of(Account.builder()
                                 .accountUser(poby)
                         .accountNumber("1000000012").build()));
@@ -86,6 +115,7 @@ class AccountServiceImplTest {
         assertEquals("1000000012",captor.getValue().getAccountNumber());
         assertEquals(AccountStatus.UNREGISTERED,captor.getValue().getAccountStatus());
     }
+
 
     @Test
     @DisplayName("해당 유저 없음 - 계좌 해지 실패")
@@ -205,30 +235,6 @@ class AccountServiceImplTest {
         assertEquals(ErrorCode.ACCOUNT_ALREADY_UNREGISTERED, accountException.getErrorCode());
     }
 
-    @Test
-    void creatFirstAccount(){
-        //given
-        AccountUser poby = AccountUser.builder()
-                .name("poby").build();
-        poby.setId(15L);
-        given(accountUserRepository.findById(anyLong()))
-                .willReturn(Optional.of(poby));
-        given(accountRepository.findFirstByOrderByIdDesc())
-                .willReturn(Optional.empty());
-        given(accountRepository.save(any()))
-                .willReturn(Account.builder()
-                        .accountUser(poby)
-                        .accountNumber("1000000013").build());
-
-        ArgumentCaptor<Account> captor = ArgumentCaptor.forClass(Account.class);
-
-        //when
-        AccountDto account = accountServiceImpl.createAccount(1L, 1000L);
-        //then
-        verify(accountRepository, times(1)).save(captor.capture());
-        assertEquals(account.getUserId(),15L);
-        assertEquals("1000000000",captor.getValue().getAccountNumber());
-    }
 
     @Test
     @DisplayName("해당 유저 없음 - 계좌 생성 실패")
@@ -246,6 +252,42 @@ class AccountServiceImplTest {
         //then
         assertEquals(ErrorCode.USER_NOT_FOUND, accountException.getErrorCode());
     }
+
+    @Test
+    @DisplayName("이미 사용중인 계좌번호임 - 계좌 생성 실패")
+    void createAccount_AccountNumber_Already_Exist() {
+        //given
+        AccountUser poby = AccountUser.builder()
+                .name("poby").build();
+        poby.setId(1L);
+
+        Account existingAccount = Account.builder()
+                .accountUser(poby)
+                .accountStatus(IN_USE)
+                .balance(10000L)
+                .accountNumber("1000000013").build();
+        existingAccount.setId(1L);
+
+        given(accountUserRepository.findById(anyLong()))
+                .willReturn(Optional.of(poby));
+
+        given(accountRepository.findFirstByAccountUserOrderByIdDesc(poby))
+                .willReturn(Optional.of(existingAccount));
+
+        // 계좌 번호로 계좌를 조회했을 때 이미 해당 계좌번호로 생성된 계좌가 있음
+        given(accountRepository.findByAccountNumber(anyString()))
+                .willReturn(Optional.of(existingAccount));
+
+        //when
+        AccountException accountException = assertThrows(AccountException.class,
+                () -> accountServiceImpl.createAccount(1L, 1000L));
+
+        //then
+        assertEquals(ErrorCode.ACCOUNTNUMBER_ALREADY_USED, accountException.getErrorCode());
+    }
+
+
+
     @Test
     @DisplayName("유저 당 최대 계좌 수는 10개")
     void createAccount_maxAccountIs10(){

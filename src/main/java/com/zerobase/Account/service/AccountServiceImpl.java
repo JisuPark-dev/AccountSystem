@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 import static com.zerobase.Account.type.AccountStatus.IN_USE;
 import static com.zerobase.Account.type.ErrorCode.*;
@@ -35,11 +36,14 @@ public class AccountServiceImpl implements AccountService{
     public AccountDto createAccount(Long userId, Long initialBalance) {
         AccountUser accountUser = getAccountUser(userId);
 
+        // 유저가 있는지 확인
         validateCreateAccount(accountUser);
 
-        String newAccountNumber = accountRepository.findFirstByOrderByIdDesc()
-                .map(account -> (Integer.parseInt(account.getAccountNumber())) + 1 + "")
-                .orElse("1000000000");
+        // 랜덤 10자리 계좌 생성됨
+        String newAccountNumber = getNewAccountNumber(accountUser);
+
+        // 이미 있는 계좌 번호인지 확인
+        validateAccountNumber(newAccountNumber);
 
         return AccountDto.fromEntity(
                 accountRepository.save(
@@ -52,6 +56,32 @@ public class AccountServiceImpl implements AccountService{
                                 .build()
                 )
         );
+    }
+
+    private String getNewAccountNumber(AccountUser accountUser) {
+        return accountRepository.findFirstByAccountUserOrderByIdDesc(accountUser)
+                .map(account -> (Long.parseLong(account.getAccountNumber())) + 1 + "")
+                .orElse(getRandomAccountTenNumber());
+    }
+
+    private void validateAccountNumber(String newAccountNumber) {
+        if(accountRepository.findByAccountNumber(newAccountNumber).isPresent()) {
+            throw new AccountException(ACCOUNTNUMBER_ALREADY_USED);
+        }
+    }
+
+    public String getRandomAccountTenNumber() {
+        //accountNumber 자동 생성
+        Random rand = new Random();
+        // 첫 숫자 1에서 9사이로 생성
+        String randomAccountTenNumber = Integer.toString(rand.nextInt(9) + 1);
+
+        // 나머지 뒷 9숫자 생성
+        for (int i = 0; i < 9; i++) {
+            int digit = rand.nextInt(10);
+            randomAccountTenNumber += Integer.toString(digit);
+        }
+        return randomAccountTenNumber;
     }
 
     @Override

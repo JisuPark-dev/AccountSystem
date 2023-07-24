@@ -1,4 +1,4 @@
-# AccountSystem
+# 💵 AccountSystem
 ## 서비스 개요
 #### 계좌 생성, 조회, 해지 + 거래, 거래취소, 거래 조회 기능 제공하는 계좌 서비스 
 
@@ -76,4 +76,6 @@ ii. 성공
 
 
 # 관심가진 부분
-> AccountService와 TransactionService의 경우 향후 변경가능성이 있다고 판단하여 인터페이스로 구현함. 
+> AccountService와 TransactionService의 경우 향후 변경가능성이 있다고 판단하여 **인터페이스**로 구현.
+
+> mokito를 사용하여 Service와 Controller에 대한 **유닛 테스트** 작성.

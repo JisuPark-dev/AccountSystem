@@ -79,3 +79,5 @@ ii. 성공
 > AccountService와 TransactionService의 경우 향후 변경가능성이 있다고 판단하여 **인터페이스**로 구현.
 
 > mokito를 사용하여 Service와 Controller에 대한 **유닛 테스트** 작성.
+ 
+> **validation** 고민 후 자체 에러코드 생성하여 **예외처리** 진행.

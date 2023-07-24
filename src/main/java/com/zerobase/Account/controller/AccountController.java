@@ -18,7 +18,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping("/account")
-    public CreateAccount.Response createAccount(
+    public CreateAccount.Response deleteAccount(
             @RequestBody @Valid CreateAccount.Request request
             ) {
         return CreateAccount.Response.from(

@@ -80,4 +80,4 @@ ii. 성공
 
 > mokito를 사용하여 Service와 Controller에 대한 **유닛 테스트** 작성.
  
-> **validation** 고민 후 자체 에러코드 생성하여 **예외처리** 진행.
+> **validation** 문제를 고민한 결과, 자체 에러 코드를 생성하여 예외 처리를 구현

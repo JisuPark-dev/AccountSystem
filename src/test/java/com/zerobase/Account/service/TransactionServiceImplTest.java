@@ -177,7 +177,7 @@ class TransactionServiceImplTest {
     }
 
     @Test
-    @DisplayName("거래 금액이 잔액보다 큰 경우")
+    @DisplayName("거래 금액이 잔액보다 큰 경우_거래실패")
     void exceedAmount_UseBalance() {
         //given
         AccountUser user = AccountUser.builder()
@@ -201,7 +201,55 @@ class TransactionServiceImplTest {
     }
 
     @Test
-    @DisplayName("실패 트랜젝션 저장 성")
+    @DisplayName("1억보다 거래금액이 큰 경우_거래 실패")
+    void Too_Big_Amount_UseBalance() {
+        //given
+        AccountUser user = AccountUser.builder()
+                .name("poby").build();
+        user.setId(12L);
+        Account account = Account.builder()
+                .accountUser(user)
+                .accountStatus(IN_USE)
+                .balance(100_000_0000L) // 10억
+                .accountNumber("1000000012").build();
+        given(accountUserRepository.findById(anyLong()))
+                .willReturn(Optional.of(user));
+        given(accountRepository.findByAccountNumber(anyString()))
+                .willReturn(Optional.of(account));
+        //then
+        AccountException accountException = assertThrows(AccountException.class,
+                () -> transactionServiceImpl.useBalance(1L, "1234567890",100_000_001L));
+
+        assertEquals(ErrorCode.AMOUNT_IS_TOO_BIG, accountException.getErrorCode());
+        verify(transactionRepository, times(0)).save(any());
+    }
+
+    @Test
+    @DisplayName("거래금액이 100원보다 작은 경우_거래 실패")
+    void Too_Small_Amount_UseBalance() {
+        //given
+        AccountUser user = AccountUser.builder()
+                .name("poby").build();
+        user.setId(12L);
+        Account account = Account.builder()
+                .accountUser(user)
+                .accountStatus(IN_USE)
+                .balance(100_000_0000L) // 10억
+                .accountNumber("1000000012").build();
+        given(accountUserRepository.findById(anyLong()))
+                .willReturn(Optional.of(user));
+        given(accountRepository.findByAccountNumber(anyString()))
+                .willReturn(Optional.of(account));
+        //then
+        AccountException accountException = assertThrows(AccountException.class,
+                () -> transactionServiceImpl.useBalance(1L, "1234567890",99L));
+
+        assertEquals(ErrorCode.AMOUNT_IS_TOO_SMALL, accountException.getErrorCode());
+        verify(transactionRepository, times(0)).save(any());
+    }
+
+    @Test
+    @DisplayName("실패 트랜젝션 저장 성공")
     void saveFailedUseTransaction() {
         //given
         AccountUser user = AccountUser.builder()

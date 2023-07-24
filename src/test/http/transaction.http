@@ -13,8 +13,8 @@ Content-Type: application/json
 
 {
   "userId": 1,
-  "accountNumber": "1000000003",
-  "amount" :  11
+  "accountNumber": "8537231898",
+  "amount" :  100000001
 }
 
 

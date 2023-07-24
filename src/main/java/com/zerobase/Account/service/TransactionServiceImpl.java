@@ -63,6 +63,12 @@ public class TransactionServiceImpl implements TransactionService{
         if (amount > account.getBalance()) {
             throw new AccountException(ErrorCode.AMOUNT_EXCEED_BALANCE);
         }
+        if(amount < 100){
+            throw  new AccountException(ErrorCode.AMOUNT_IS_TOO_SMALL);
+        }
+        if(amount > 100000000){ // 1억
+            throw  new AccountException(ErrorCode.AMOUNT_IS_TOO_BIG);
+        }
 
     }
 

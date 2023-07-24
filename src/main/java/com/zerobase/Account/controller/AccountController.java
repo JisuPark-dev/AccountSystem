@@ -30,7 +30,7 @@ public class AccountController {
     }
 
     @DeleteMapping("/account")
-    public DeleteAccount.Response createAccount(
+    public DeleteAccount.Response deleteAccount(
             @RequestBody @Valid DeleteAccount.Request request
     ) {
         return DeleteAccount.Response.from(
